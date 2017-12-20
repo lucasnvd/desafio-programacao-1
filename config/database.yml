@@ -1,0 +1,19 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  username: root
+  password: root
+  socket: /var/run/mysqld/mysqld.sock
+  pool: 5
+
+development:
+  <<: *default
+  database: beers_store_development
+
+test:
+  <<: *default
+  database: beers_store_development
+
+production:
+  <<: *default
+  database: beers_store_development
