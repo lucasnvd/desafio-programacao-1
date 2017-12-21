@@ -1,46 +1,126 @@
 # Desafio de programação 1
-A idéia deste desafio é nos permitir avaliar melhor as habilidades de candidatos à vagas de programador, de vários níveis.
 
-Este desafio deve ser feito por você em sua casa. Gaste o tempo que você quiser, porém normalmente você não deve precisar de mais do que algumas horas.
+Para testar:
 
-## Instruções de entrega do desafio
-1. Primeiro, faça um fork deste projeto para sua conta no Github (crie uma se você não possuir).
-1. Em seguida, implemente o projeto tal qual descrito abaixo, em seu próprio fork.
-1. Por fim, empurre todas as suas alterações para o seu fork no Github e envie um pull request para este repositório original. Se você já entrou em contato com alguém da Myfreecomm sobre uma vaga, avise também essa pessoa por email, incluindo no email o seu usuário no Github.
+```
 
-## Instruções alternativas de entrega do desafio (caso você não queira que sua submissão seja pública)
-1. Faça um clone deste repositório.
-1. Em seguida, implemente o projeto tal qual descrito abaixo, em seu clone local.
-1. Por fim, envie via email um arquivo patch para seu contato na Myfreecomm.
+rails db:create
+rails db:migrate
+rails db:seed
+rails s
 
-## Descrição do projeto
-Você recebeu um arquivo de texto com os dados de vendas da empresa. Precisamos criar uma maneira para que estes dados sejam importados para um banco de dados.
+```
 
-Sua tarefa é criar uma interface web que aceite upload de arquivos, normalize os dados e armazene-os em um banco de dados relacional.
+Endpoints:
 
-Sua aplicação web DEVE:
 
-1. Aceitar (via um formulário) o upload de arquivos separados por TAB com as seguintes colunas: purchaser name, item description, item price, purchase count, merchant address, merchant name. Você pode assumir que as colunas estarão sempre nesta ordem, que sempre haverá dados em cada coluna, e que sempre haverá uma linha de cabeçalho. Um arquivo de exemplo chamado example_input.tab está incluído neste repositório.
-1. Interpretar ("parsear") o arquivo recebido, normalizar os dados, e salvar corretamente a informação em um banco de dados relacional.
-1. Exibir a receita bruta total representada pelo arquivo enviado após o upload + parser.
-1. Ser escrita obrigatoriamente em Ruby 2.0+ ou Python 2.7+ (caso esteja entrevistando para uma vaga específica, utilize a linguagem solicitada pela vaga).
-1. Ser simples de configurar e rodar, funcionando em ambiente compatível com Unix (Linux ou Mac OS X). Ela deve utilizar apenas linguagens e bibliotecas livres ou gratuitas.
+### Adicionar um produto ao carrinho.
+Utilizar o UUID: `4ea9dca7-1f51-4f5d-8e54-336bb11974b9` no header `USER-UUID` para testar
 
-Sua aplicação web não precisa:
+```
+POST: http://localhost:3000/api/v1/cart/add
+.
+Request Headers:
+{
+    'Content-Type': 'application/json',
+    'USER-UUID': '4ea9dca7-1f51-4f5d-8e54-336bb11974b9'
+}
+.
+Request Body:
+{
+    "requested_quantity": 1,
+    "requested_beer_id": 15
+}
+.
+Response Body: (200 OK)
+{
+    "success": true,
+    "cart_id": 1
+}
+```
 
-1. Lidar com autenticação ou autorização (pontos extras se ela fizer, mais pontos extras se a autenticação for feita via OAuth).
-1. Ser escrita usando algum framework específico (mas não há nada errado em usá-los também, use o que achar melhor).
-1. Ter uma aparência bonita.
+Caso adicione o mesmo produto repetidas vezes, ele não irá se repetir no carrinho, somente o atributo referente
+a quantidade de items adicionados ao carrinho que será modificado (**incrementando**).
 
-## Avaliação
-Seu projeto será avaliado de acordo com os seguintes critérios. 
+### Remover um produto do carrinho
 
-1. Sua aplicação preenche os requerimentos básicos?
-1. Você documentou a maneira de configurar o ambiente e rodar sua aplicação?
-1. Você seguiu as instruções de envio do desafio?
+```
+POST: http://localhost:3000/api/v1/cart/remove
+.
+Request Headers:
+{
+    'Content-Type': 'application/json',
+    'USER-UUID': '???'
+}
+.
+Request Body:
+{
+    "requested_beer_id": 15,
+    "cart_id": 1
+}
+.
+Response Body: (200 OK)
+{
+    "success": true,
+    "cart_was_canceled": false
+}
+```
 
-Adicionalmente, tentaremos verificar a sua familiarização com as bibliotecas padrões (standard libs), bem como sua experiência com programação orientada a objetos a partir da estrutura de seu projeto.
+Se todos os produtos de um carrinho forem removidos, este carrinho será **cancelado**, e um nov
+carrinho será gerado. Desta forma, futuramente poderá ser desenvolvido uma métrica 
+informando, quais usuários 'fecharam' ou desistiram de comprar os produtos que foram adicionados ao carrinho cancelado, e quais produtos
+este usuário desistiu de comprar.
 
-### Referência
+Lembrando que um produto após ser removido, ele não é 'removido' do carrinho, ele apenas recebe uma *flag* que foi removido.
 
-Este desafio foi baseado neste outro desafio: https://github.com/lschallenges/data-engineering
+### Consultar o carrinho
+Só será possível consultar um carrinho, após adicionar um produto ao mesmo.
+
+```
+GET: http://localhost:3000/api/v1/cart/:id
+.
+Request Headers:
+{
+    'USER-UUID': '???'
+}
+.
+Path params
+:id => ID do carrinho // Pode utilizar o ID do carrinho presente no corpo da resposta do cart#ad
+.
+Response Body:
+{
+    "success": true,
+    "cart": {
+        "created_at": "21/12/2017 - 02:31",
+        "updated_at": "21/12/2017 - 02:31",
+        "status": "open",
+        "id": 1,
+        "items": [
+            {
+                "requested_quantity": 1,
+                "removed": true,
+                "created_at": "21/12/2017 - 02:31",
+                "updated_at": "21/12/2017 - 02:32",
+                "beer": {
+                    "alcohol": "4,1%",
+                    "price": "$ 211.2",
+                    "malts": "Roasted barley",
+                    "name": "Trois Pistoles"
+                }
+            },
+            {
+                "requested_quantity": 1,
+                "removed": false,
+                "created_at": "21/12/2017 - 02:31",
+                "updated_at": "21/12/2017 - 02:31",
+                "beer": {
+                    "alcohol": "8,9%",
+                    "price": "$ 185.9",
+                    "malts": "Carapils",
+                    "name": "Brooklyn Black"
+                }
+            }
+        ]
+    }
+}
+```

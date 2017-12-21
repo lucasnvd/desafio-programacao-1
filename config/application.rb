@@ -13,6 +13,7 @@ module DesafioProgramacao1
 
     config.autoload_paths += Dir[
 
+      Rails.root.join('app', 'representers', '*.rb'),
       Rails.root.join('app', 'services', '*.rb'),
       Rails.root.join('app', 'schemas', '*.rb')
 

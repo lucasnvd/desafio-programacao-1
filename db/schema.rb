@@ -12,21 +12,14 @@
 
 ActiveRecord::Schema.define(version: 20171220221151) do
 
-  create_table "beer_cart_controls", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.bigint "cart_id"
-    t.bigint "beer_id"
-    t.index ["beer_id"], name: "index_beer_cart_controls_on_beer_id"
-    t.index ["cart_id"], name: "index_beer_cart_controls_on_cart_id"
-  end
-
-  create_table "beer_provider_controls", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "beer_provider_controls", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "provider_id"
     t.bigint "beer_id"
     t.index ["beer_id"], name: "index_beer_provider_controls_on_beer_id"
     t.index ["provider_id"], name: "index_beer_provider_controls_on_provider_id"
   end
 
-  create_table "beers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "beers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "available", default: 12
     t.decimal "alcohol", precision: 20, scale: 6, default: "0.0"
     t.decimal "price", precision: 20, scale: 6, default: "0.0"
@@ -36,7 +29,7 @@ ActiveRecord::Schema.define(version: 20171220221151) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "cart_beer_controls", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "cart_beer_controls", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "beer_id"
     t.bigint "cart_id"
     t.integer "requested_quantity", default: 0
@@ -47,7 +40,7 @@ ActiveRecord::Schema.define(version: 20171220221151) do
     t.index ["cart_id"], name: "index_cart_beer_controls_on_cart_id"
   end
 
-  create_table "carts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "carts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "user_id"
     t.integer "status", default: 1
     t.datetime "created_at", null: false
@@ -55,7 +48,7 @@ ActiveRecord::Schema.define(version: 20171220221151) do
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
-  create_table "providers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "providers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "contact_email", null: false
     t.string "contact_phone", null: false
     t.string "name", null: false
@@ -64,7 +57,7 @@ ActiveRecord::Schema.define(version: 20171220221151) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "birth_date", null: false
     t.string "email", null: false
     t.string "name", null: false
